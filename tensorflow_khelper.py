@@ -402,7 +402,7 @@ class Khelper:
     
     
     def plot_model_history(self, history, figsize=(12, 5)):
-        plt.figure(figsize=figsize)  # Imposta la dimensione della figura
+        plt.figure(figsize=figsize)  # dimensione della figura
 
         # accuracies plot
         plt.subplot(1, 2, 1)  # first subplot
