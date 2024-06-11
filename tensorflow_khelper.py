@@ -21,7 +21,7 @@ class Khelper:
         self.class_name = os.listdir(self.train_dir)
         self.log_dirs = {}
     
-    # Image Preprocessing
+    # ------------ Image Preprocessing  ------------ # 
 
     def image_dataset_from_dir(self, image_size=(224, 224), label_mode='categorical', batch_size=32, shuffle=True, seed=None):
         
@@ -114,21 +114,21 @@ class Khelper:
         """
         data = []
 
-        # Esamina tutte le sottodirectory e i file nella dir_path
+        # tutte le sottodirectory e i file nella dir_path
         for root, dirs, files in os.walk(dir_path):
             # Ignora le sottodirectory nascoste
             dirs[:] = [d for d in dirs if not d.startswith('.')]
             
-            # Conta il numero di immagini nella sottodirectory corrente
+            # numero di immagini nella sottodirectory corrente
             images_count = len([f for f in files if f.endswith(('.jpg', '.jpeg', '.png', '.gif'))])
 
-            # Aggiungi i dati della sottodirectory alla lista
+            # dati della sottodirectory alla lista
             data.append([os.path.basename(root), len(dirs), images_count, root])
 
-        # Definisci gli header per la tabella
+        # header per la tabella
         table_headers = ['Directory Name', 'Number of Subdirectories', 'Number of Images', 'Directory Path']
 
-        # Stampare la tabella utilizzando tabulate
+        # tabella utilizzando tabulate
         print(tabulate(data, headers=table_headers, tablefmt="fancy_grid"))
         
     @staticmethod    
@@ -177,7 +177,7 @@ class Khelper:
         # Define input layer with specified shape
         inputs = tfk.layers.Input(shape=input_shape)
         
-        # Create data augmentation pipeline
+        # data augmentation pipeline
         x = inputs
         
         if rescaling:
@@ -264,7 +264,7 @@ class Khelper:
         else:
             format_info = f"in an unrecognized format (ndim={array_pic.ndim})"
     
-        # Costruisci e restituisci il testo delle informazioni sull'immagine
+        # restituisce il testo delle informazioni sull'immagine
         table = [
             ["Scaled Status", scaled_info],
             ["Image Format", format_info],
@@ -274,7 +274,7 @@ class Khelper:
             ["Total Number of Elements", array_pic.size]
         ]
 
-    # Formatta la tabella usando tabulate
+    # Formattazione della tabella usando tabulate
         info_table = tabulate(table, headers=["Attribute", "Value"], tablefmt="fancy_grid")
 
         return info_table
@@ -288,7 +288,7 @@ class Khelper:
         # read in the image
         img = tf.io.read_file(filename)
     
-        # Decode the file into tensor
+        # Decode file into tensor
         img = tf.image.decode_image(img)
     
         # Resize the image
@@ -306,13 +306,13 @@ class Khelper:
         make a prediction and plot it with information.
         """
 
-        # Import target image and preprocess it
+        # import target image and preprocess it
         img = self.load_and_scale_data(filename)
     
         # Make prediction
         pred = compiled_model.predict(tf.expand_dims(img, axis=0), verbose=0)
     
-        # Get the predoction class
+        # Get the prediction class
         pred_class = self.class_names[int(tf.round(pred))]
     
         # Plot image and pred class
@@ -355,6 +355,15 @@ class Khelper:
         
         
     def make_confusion_matrix(self, y_true, y_pred, figsize=(10, 10), text_size=15):
+        """
+        Generates and visualizes a confusion matrix for evaluating the performance of a classification model.
+
+        Parameters:
+            - y_true (array-like): True labels of the dataset.
+            - y_pred (array-like): Predicted labels by the model.
+            - figsize (tuple): Size of the figure (default is (10, 10)).
+            - text_size (int): Font size for the text in the plot (default is 15).
+        """
         # create confusion matrix
         cm = confusion_matrix(y_true, y_pred)
         cm_norm = cm.astype("float") / cm.sum(axis=1)[:, np.newaxis] # normalization
@@ -372,7 +381,7 @@ class Khelper:
         else:
             labels = np.arange(cm.shape[0])
     
-        # Label the axes
+        # Label axes
         ax.set(title='Confusion Matrix',
                 xlabel='Predict Label',
                 ylabel='True Label',
@@ -385,12 +394,12 @@ class Khelper:
         ax.xaxis.set_label_position('bottom')
         ax.xaxis.tick_bottom()
     
-        # Adjust label size
+        # label size
         ax.yaxis.label.set_size(text_size)
         ax.xaxis.label.set_size(text_size)
         ax.title.set_size(text_size)
     
-        # set treshold for different color
+        # treshold for different color
         treshold = (cm.max() + cm.min()) / 2.
     
         for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
@@ -402,6 +411,13 @@ class Khelper:
     
     
     def plot_model_history(self, history, figsize=(12, 5)):
+        """
+        Plots the training history of a machine learning model including accuracy and loss over epochs.
+
+        Parameters:
+            - history (History object): History object returned by model.fit() containing training metrics.
+            - figsize (tuple): Size of the figure (default is (12, 5)).
+        """
         plt.figure(figsize=figsize)  # dimensione della figura
 
         # accuracies plot
